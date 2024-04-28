@@ -14,6 +14,6 @@ RUN mvn -f /home/app/pom.xml clean package
 
 # Package stage
 FROM openjdk:17-alpine
-COPY --from=build /home/app/target/auth-0.0.1-SNAPSHOT.jar /usr/local/lib/demo.jar
+COPY --from=build /home/app/target/products-0.0.1-SNAPSHOT.jar /usr/local/lib/products.jar
 EXPOSE 8082
-ENTRYPOINT ["java","-jar","/usr/local/lib/demo.jar"]
+ENTRYPOINT ["java","-jar","/usr/local/lib/products.jar"]
