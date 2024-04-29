@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
 
@@ -21,13 +23,22 @@ import java.time.LocalDate;
 public class ProductService {
 
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
-    public ProductDTO create(ProductRequestDTO data) throws CustomException {
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private MinioServiceImpl minioService;
+
+    public ProductDTO create(String data, MultipartFile file) throws CustomException {
         try{
-            ProductEntity parsed = ProductEntity.fromDto(data);
+            ProductRequestDTO requestToDto = objectMapper.readValue(data, ProductRequestDTO.class);
+            ProductEntity parsed = ProductEntity.fromDto(requestToDto);
             parsed.setCreatedAt(LocalDate.now());
             parsed.setUpdatedAt(LocalDate.now());
+
+            parsed.setProductImgUrl(minioService.save(file));
             ProductEntity response = productRepository.save(parsed);
             return ProductDTO.fromEntity(response);
         } catch (Exception ex){

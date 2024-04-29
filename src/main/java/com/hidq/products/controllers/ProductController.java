@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("product")
@@ -23,8 +24,8 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping("/save")
-    ProductDTO save(@Valid @RequestBody ProductRequestDTO dto) throws CustomException {
-        return productService.create(dto);
+    ProductDTO save(@RequestParam(value="data") String dto, @RequestParam(value="image") MultipartFile image) throws CustomException {
+        return productService.create(dto, image);
     }
 
     @GetMapping("/find/{id}")
